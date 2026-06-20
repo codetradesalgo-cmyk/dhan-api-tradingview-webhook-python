@@ -1,25 +1,52 @@
-# Dhan API - TradingView Webhook Bridge (Python)
+# ⚡ Indian F&O Webhook Bridge (Sub-50ms Execution)
 
-A basic Python/Flask webhook listener to connect TradingView alerts directly to the Dhan HQ API for Indian F&O execution.
+A localized Python Flask middleware engine utilizing a Pandas RAM-cache to eliminate TradingView webhook latency and prevent `DH-905` lot-size rejection errors in the Indian F&O market.
 
-## Limitations of this Free Build (Read Before Live Trading)
-This repository contains the `lite` execution engine. If you use this script in a live market environment, you will face three structural issues:
-1. **The DH-905 Error (Lot Sizing):** This script requires you to hardcode lot sizes. If you accidentally send `60` instead of `65` for Nifty, the exchange will reject the order.
-2. **Manual Token Updates:** You must manually find and update the `security_id` (Exchange Token) for the exact strike price you want to trade every single day.
-3. **Execution Latency:** Running Flask locally without a production WSGI server causes execution delays of 500ms+, causing massive slippage on fast M1/M5 candles.
+**Why this exists:** Routing direct TradingView webhooks to Indian broker APIs introduces 1,500ms+ of queuing latency. On a fast Nifty breakout, crossing the bid-ask spread with a 2-second delay guarantees massive slippage. Furthermore, direct webhooks fail because broker APIs require strict, static `SEM_LOT_SIZE` multipliers and exchange tokens, not dynamic PineScript data.
 
-## 🚀 The Institutional Blueprint (Sub-50ms Execution)
-I engineered a production-grade, zero-touch architecture to solve the friction above. 
+This architecture intercepts the dynamic JSON payload, performs an instant `O(1)` memory lookup in Pandas to extract the exact static token, and fires a limit order to the broker in under 50ms.
 
-The **Smart Routing Engine Blueprint** includes:
-* **RAM-Cached Scrip Master:** Automatically maps ATM/OTM strikes dynamically based on Spot price. No manual token updates required.
-* **Auto-Lot Sizing Matrix:** Failsafes built-in to auto-correct Nifty (65), BankNifty (30), and Sensex (20) lot parameters.
-* **Headless VPS Deployment:** The exact `systemd` and `nginx` configurations to host your engine securely 24/7 on a $5 Ubuntu cloud server.
-* **Plug-and-Play TradingView JSONs:** Pre-formatted PineScript payload templates.
+---
 
-**[Download the Full Production-Ready Source Code Here]**(https://topmate.io/codetrades_algo/2159755)
+## 🛠️ Mandatory Prerequisites (Infrastructure)
 
-## Setup for Lite Version
-1. `pip install -r requirements.txt`
-2. Insert your Client ID and Token in `app.py`.
-3. Run `python app.py`.
+To run this middleware securely without dropouts, you must deploy it on a dedicated, low-latency Linux server and utilize an API-friendly broker. Do not run this on your local Windows machine. 
+
+1. **The Server (VPS):** Deploy a headless Ubuntu Droplet.
+   👉 [Spin up your Ubuntu VPS here (DigitalOcean)] -> https://m.do.co/c/cb6b8162a216
+2. **The Broker API:** This bridge is optimized for brokers with high-frequency API rate limits.
+   👉 [Open an API-enabled Dhan Account] -> https://join.dhan.co/?invite=ROCVO41702
+3. **TradingView Webhooks** This bridge is optimized for signals generated from TradingView Alerts
+   👉 [Unlock High-Frequency Webhooks on TradingView Here] -> https://in.tradingview.com/?aff_id=167675
+---
+
+## 🏗️ Core Architecture Overview
+
+1. `app.py` (Flask Server): Listens for incoming TradingView webhooks on Port 80.
+2. `scrip_master.py` (Pandas Engine): Downloads the daily NSE Scrip Master CSV on boot.
+3. `order_router.py`: Calculates dynamic limit offsets (e.g., LTP + 0.05%) to cap slippage.
+
+---
+
+## 🚀 Deployment Instructions (DIY)
+
+*Warning: You must have a basic understanding of Linux command-line interfaces, SSH, and Python virtual environments to deploy this securely.*
+
+1. SSH into your Ubuntu VPS.
+2. Update dependencies: `sudo apt update && sudo apt install python3-pip python3-venv -y`
+3. Clone this repository: `git clone https://github.com/YourUsername/fno-webhook-bridge.git`
+4. Set up the virtual environment: `python3 -m venv venv && source venv/bin/activate`
+5. Install requirements: `pip install -r requirements.txt`
+6. Add your Broker API Keys to the `.env` file.
+7. Configure `gunicorn` and set up the `systemd` background service to ensure the bridge stays alive 24/7.
+
+---
+
+## 🛑 Need Help? (Done-For-You Setup)
+
+If you are a trader, not a Linux sysadmin, misconfiguring the `systemd` service or the WSGI environment will result in dropped webhooks and missed trades.
+
+If you want to skip the command line and have this institutional architecture built for you, I offer a **1-on-1 Remote Deployment Service**. I will provision the server, lock down the firewalls, and build the exact sub-50ms bridge end-to-end.
+
+👉 [Book the Done-For-You VPS Integration Here] -> https://topmate.io/codetrades_algo/2159660
+👉 [Book the Architecture & API Consultation Here] -> https://topmate.io/codetrades_algo/2164632

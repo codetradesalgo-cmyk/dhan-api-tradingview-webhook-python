@@ -48,13 +48,14 @@ Configure your TradingView webhook alerts to transmit strictly formatted JSON.
 Endpoint: http://[YOUR_VPS_IP]/webhook
 
 Done-For-You (DFY) Turnkey Deployment
+
 Managing Linux system daemons, configuring Nginx web proxies, and debugging asynchronous worker states can be complex. If one step of the ASGI configuration fails, your webhooks will drop.
 
 If you are a quantitative trader, prop desk, or fund manager who wants to focus purely on strategy logic without managing the backend infrastructure, we offer a Complete DFY Deployment Service.
 
 What is included:
 
-Provisioning of an optimized, low-latency Ubuntu VPS (Mumbai Region).
+Provisioning of an optimized, low-latency Ubuntu VPS.
 
 End-to-end installation of the FastAPI/NumPy routing engine.
 

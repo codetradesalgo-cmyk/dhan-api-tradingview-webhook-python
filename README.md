@@ -41,19 +41,19 @@ echo 'DHAN_ACCESS_TOKEN="your_production_token_here"' > .env
 # Ignite the ASGI workers
 uvicorn app:app --host 0.0.0.0 --port 80 --workers 3
 ```
-Payload Structure
+## Payload Structure
 
 Configure your TradingView webhook alerts to transmit strictly formatted JSON.
 
 Endpoint: http://[YOUR_VPS_IP]/webhook
 
-Done-For-You (DFY) Turnkey Deployment
+## Done-For-You (DFY) Turnkey Deployment
 
 Managing Linux system daemons, configuring Nginx web proxies, and debugging asynchronous worker states can be complex. If one step of the ASGI configuration fails, your webhooks will drop.
 
 If you are a quantitative trader, prop desk, or fund manager who wants to focus purely on strategy logic without managing the backend infrastructure, we offer a Complete DFY Deployment Service.
 
-What is included:
+** What is included:
 
 Provisioning of an optimized, low-latency Ubuntu VPS.
 
@@ -68,5 +68,5 @@ Handover of a fully operational, live-market-ready system.
 To request a DFY build, visit:
 👉 https://topmate.io/codetrades_algo/2159660
 
-Disclaimer
+## Disclaimer
 This software is for educational and architectural demonstration purposes. Algorithmic trading carries significant financial risk. The developers are not responsible for capital losses incurred due to misconfigured servers, AWS/broker network outages, or incorrect strategy logic.

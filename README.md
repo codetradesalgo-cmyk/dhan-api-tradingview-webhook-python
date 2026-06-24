@@ -57,8 +57,11 @@ echo 'DHAN_ACCESS_TOKEN="your_production_token_here"' > .env
 uvicorn app:app --host 0.0.0.0 --port 80 --workers 3
 ```
 
-Payload Structure
+## Payload Structure
+
 ​Configure your TradingView webhook alerts to transmit strictly formatted JSON.
 ​Endpoint: http://[YOUR_VPS_IP]/webhook
-​Disclaimer
+
+## ​Disclaimer
+
 ​This software is for educational and architectural demonstration purposes. Algorithmic trading carries significant financial risk. The developers are not responsible for capital losses incurred due to misconfigured servers, AWS/broker network outages, or incorrect strategy logic.

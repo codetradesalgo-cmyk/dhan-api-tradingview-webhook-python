@@ -1,6 +1,6 @@
-# Asynchronous Webhook Engine for Dhan API 
+# Asynchronous Webhook Engine for Dhan API
 
-An institutional-grade, sub-50ms execution engine designed to route TradingView webhooks directly to the Dhan API. 
+An institutional-grade, sub-50ms execution engine designed to route TradingView webhooks directly to the Dhan API.
 
 Standard retail architectures built on synchronous frameworks (Flask/Django) suffer from severe input/output blocking, resulting in multi-second slippage during high-volatility market opens. This repository bypasses the WSGI bottleneck entirely by utilizing a pure ASGI framework, enabling true concurrent execution for quantitative strategies.
 
@@ -15,28 +15,27 @@ Standard retail architectures built on synchronous frameworks (Flask/Django) suf
 
 To deploy this engine without network latency, you cannot run it locally on a Windows machine. You must provision an Ubuntu server located near the NSE exchange servers.
 
-1. **Brokerage API:** This engine is strictly mapped to Dhan's v2 API structure. You must have active production API credentials.
-2. **Linux VPS:** Provision a clean Ubuntu 22.04+ node. 
-3. **TradingView Premium:** Unrestricted, high-frequency webhook transmission requires a paid TradingView tier.
-
----
+* **Brokerage API:** This engine is strictly mapped to Dhan's v2 API structure. You must have active production API credentials.
+* **Linux VPS:** Provision a clean Ubuntu 22.04+ node.
+* **TradingView Premium:** Unrestricted, high-frequency webhook transmission requires a paid TradingView tier.
 
 ## ⚠️ Deploying to Live F&O Markets?
 
-The open-source engine below handles baseline asynchronous routing. However, to execute Nifty, BankNifty, or MCX options, you must inject dynamic exchange `securityId` tokens into your JSON payloads. 
+The open-source engine below handles baseline asynchronous routing. However, to execute Nifty, BankNifty, or MCX options, you must inject dynamic exchange `securityId` tokens into your JSON payloads.
 
-Parsing the 100MB+ Dhan daily master CSV during live market hours will introduce heavy CPU bottlenecks and cause severe execution slippage. Furthermore, hardcoding your expiry dates will break your execution engine when the exchange shifts expiry schedules (e.g., the recent Nifty shift to Tuesdays).
+Parsing the 100MB+ Dhan daily master CSV during live market hours will introduce heavy CPU bottlenecks and cause severe execution slippage. Furthermore, hardcoding your expiry dates will break your execution engine when the exchange shifts expiry schedules (e.g., the recent Nifty shift to Tuesdays and BankNifty monthly limitations).
 
 For quants moving to live capital, we have packaged the production-ready options routing layer:
 
-📦 **[Premium Module: Dynamic F&O Token Mapper & Strike Resolver] https://topmate.io/codetrades_algo/2170763**
-* **$O(1)$ Lookup Latency:** Achieves sub-microsecond token mapping via pure Python local memory caching. Bypasses Pandas bloat entirely.
+### 📦 [Premium Module: Dynamic F&O Token Mapper & Strike Resolver](https://topmate.io/codetrades_algo/2170763)
+
+* **O(1) Lookup Latency:** Achieves sub-microsecond token mapping via pure Python local memory caching. Bypasses Pandas bloat entirely.
 * **Auto-Expiry Discovery:** Automatically parses the exchange master to find the nearest valid weekly expiries (maintenance-free rollovers).
 * **Dynamic Strike Resolver:** Mathematically converts live spot prices into valid exchange ATM/OTM strikes instantly for multiple indices.
 
----
+**[👉 Download the Production Module Here (₹5,999)](https://topmate.io/codetrades_algo/2170763)** — *Instant delivery of the complete Python source code and integration guide.*
 
-## Core Deployment 
+## Core Deployment
 
 Once your Ubuntu node is live, run the following commands to construct the environment and ignite the engine.
 
@@ -59,9 +58,11 @@ uvicorn app:app --host 0.0.0.0 --port 80 --workers 3
 
 ## Payload Structure
 
-​Configure your TradingView webhook alerts to transmit strictly formatted JSON.
-​Endpoint: http://[YOUR_VPS_IP]/webhook
+Configure your TradingView webhook alerts to transmit strictly formatted JSON. 
 
-## ​Disclaimer
+**Endpoint:** `http://[YOUR_VPS_IP]/webhook`
 
-​This software is for educational and architectural demonstration purposes. Algorithmic trading carries significant financial risk. The developers are not responsible for capital losses incurred due to misconfigured servers, AWS/broker network outages, or incorrect strategy logic.
+## Disclaimer
+
+This software is for educational and architectural demonstration purposes. Algorithmic trading carries significant financial risk.
+
